@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OminiStore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-atom"></i>
+                <h1>OminiStore</h1>
+            </div>
+            <div class="status-bar">
+                <div class="status-item" id="system-status">
+                    <i class="fas fa-circle status-indicator"></i>
+                    <span>系统正常</span>
+                </div>
+                <div class="status-item" id="robot-status">
+                    <i class="fas fa-robot"></i>
+                    <span>机器人空闲</span>
+                </div>
+                <div class="voice-control">
+                    <button id="voice-toggle" class="voice-btn">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要功能区域 -->
+        <main class="main-content">
+            <!-- 快速操作面板 -->
+            <section class="quick-actions">
+                <h2><i class="fas fa-bolt"></i> 快速操作</h2>
+                <div class="action-grid">
+                    <button class="action-btn primary" onclick="showModule('inventory')">
+                        <i class="fas fa-boxes"></i>
+                        <span>库存管理</span>
+                    </button>
+                    <button class="action-btn secondary" onclick="showModule('prediction')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>销售预测</span>
+                    </button>
+                    <button class="action-btn success" onclick="showModule('production')">
+                        <i class="fas fa-cogs"></i>
+                        <span>生产规划</span>
+                    </button>
+                    <button class="action-btn warning" onclick="showModule('logistics')">
+                        <i class="fas fa-truck"></i>
+                        <span>物流调度</span>
+                    </button>
+                    <button class="action-btn info" onclick="showModule('analysis')">
+                        <i class="fas fa-brain"></i>
+                        <span>智能分析</span>
+                    </button>
+                    <button class="action-btn danger" onclick="showModule('dashboard')">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>数据看板</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 动态内容区域 -->
+            <section class="content-area" id="content-area">
+                <!-- 默认显示仪表板 -->
+                <div class="module-content" id="dashboard-module">
+                    <h3><i class="fas fa-tachometer-alt"></i> 系统概览</h3>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <i class="fas fa-boxes"></i>
+                                <h4>库存状态</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="metric">
+                                    <span class="value" id="total-products">-</span>
+                                    <span class="label">总产品数</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="value warning" id="low-stock-count">-</span>
+                                    <span class="label">低库存警告</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <i class="fas fa-chart-line"></i>
+                                <h4>销售趋势</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="metric">
+                                    <span class="value" id="today-sales">-</span>
+                                    <span class="label">今日销量</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="value" id="week-trend">-</span>
+                                    <span class="label">周增长率</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <i class="fas fa-robot"></i>
+                                <h4>物流状态</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="metric">
+                                    <span class="value" id="active-tasks">-</span>
+                                    <span class="label">活跃任务</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="value" id="robot-battery">-</span>
+                                    <span class="label">机器人电量</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <i class="fas fa-cogs"></i>
+                                <h4>生产计划</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="metric">
+                                    <span class="value" id="pending-plans">-</span>
+                                    <span class="label">待执行计划</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="value" id="completion-rate">-</span>
+                                    <span class="label">完成率</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他模块内容将通过JavaScript动态加载 -->
+                <div class="module-content" id="inventory-module" style="display: none;"></div>
+                <div class="module-content" id="prediction-module" style="display: none;"></div>
+                <div class="module-content" id="production-module" style="display: none;"></div>
+                <div class="module-content" id="logistics-module" style="display: none;"></div>
+                <div class="module-content" id="analysis-module" style="display: none;"></div>
+            </section>
+        </main>
+
+        <!-- 底部状态栏 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="system-info">
+                    <span id="current-time"></span>
+                    <span class="separator">|</span>
+                    <span id="system-version">v1.0.0</span>
+                </div>
+                <div class="notifications" id="notifications">
+                    <!-- 通知消息将在这里显示 -->
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 加载提示 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>加载中...</p>
+        </div>
+    </div>
+
+    <!-- 确认对话框 -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">确认操作</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message">确定要执行此操作吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-primary" id="modal-confirm" onclick="confirmAction()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}?v={{ timestamp }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/inventory.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/prediction.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/production.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/logistics.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/analysis.js') }}"></script>
+</body>
+</html>
